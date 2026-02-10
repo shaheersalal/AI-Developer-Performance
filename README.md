@@ -1,198 +1,348 @@
-# AI-Developer-Performance
-AI Developer Performance counter Machine Learning Model
-AI Developer Performance Analysis - README
-📊 Project Overview
-This Jupyter notebook analyzes a dataset containing performance metrics for 1000 AI developers. The dataset includes various behavioral and productivity metrics such as coding hours, lines of code, bugs found/fixed, AI usage, sleep patterns, stress levels, and other development-related factors.
+# AI Developer Performance Prediction
 
-📁 Dataset Information
-File: AI_Developer_Performance_Extended_1000.csv
-Records: 1000 entries
-Features: 13 columns
+A complete machine learning solution for predicting developer performance metrics. This project includes both a **FastAPI REST API** and an **interactive Streamlit web interface** that analyzes various developer metrics including code output, AI tool usage, cognitive load, and task duration to provide performance predictions.
 
-Features Description:
-Hours_Coding - Hours spent coding (int64)
+## 🚀 Features
 
-Lines_of_Code - Number of lines written (int64)
+- **REST API** built with FastAPI for programmatic access
+- **Interactive Web UI** built with Streamlit for user-friendly predictions
+- **Machine Learning Model** for performance prediction
+- **Docker Support** for easy deployment
+- **Real-time Predictions** based on developer metrics
+- **Interactive API Documentation** with Swagger UI
 
-Bugs_Found - Number of bugs identified (int64)
+## 📋 Prerequisites
 
-Bugs_Fixed - Number of bugs resolved (int64)
+- Docker Desktop (recommended for API)
+- OR Python 3.8+ with pip (for local development)
+- Streamlit (for web UI)
 
-AI_Usage_Hours - Hours using AI tools (int64)
+## 🐳 Quick Start with Docker
 
-Sleep_Hours - Hours slept (float64)
+### Pull from Docker Hub
 
-Cognitive_Load - Cognitive load measurement (int64)
+```bash
+docker pull YOUR_USERNAME/my-api:latest
+docker run -d -p 8080:80 --name my-api YOUR_USERNAME/my-api:latest
+```
 
-Task_Success_Rate - Success rate percentage (int64)
+### Build Locally
 
-Coffee_Intake - Cups of coffee consumed (int64)
+```bash
+# Clone the repository
+git clone <your-repo-url>
+cd <project-directory>
 
-Stress_Level - Stress level measurement (int64)
+# Build the Docker image
+docker build -t my-api:latest .
 
-Task_Duration_Hours - Duration of tasks (float64)
+# Run the container
+docker run -d -p 8080:80 --name my-api my-api:latest
+```
 
-Commits - Number of code commits (int64)
+## 🎨 Streamlit Web Interface
 
-Errors - Number of errors encountered (int64)
+### Run the Interactive UI
 
-🛠️ Technical Stack
-Python Libraries Used:
-EDA & Data Manipulation:
-pandas - Data manipulation and analysis
+```bash
+# Install Streamlit and dependencies
+pip install streamlit pandas joblib scikit-learn
 
-numpy - Numerical computations
+# Run the Streamlit app
+streamlit run streamlit.py
+```
 
-seaborn & matplotlib - Data visualization
+The web interface will automatically open in your browser at `http://localhost:8501`
 
-Preprocessing & Feature Engineering:
-sklearn.model_selection.train_test_split - Data splitting
+### Using the Streamlit UI
 
-sklearn.preprocessing - Various scalers and transformers:
+1. **Select Input Parameters** from the sidebar:
+   - Lines of Code (50-2000)
+   - AI Usage Hours (1-24)
+   - Cognitive Load (20-100)
+   - Task Duration Hours (input manually)
+   - Errors (input manually)
 
-StandardScaler, MinMaxScaler, RobustScaler, MaxAbsScaler
+2. **Review Your Selection** in the main panel
 
-KBinsDiscretizer
+3. **Click "Predict"** to get the predicted Task Success Rate
 
-PowerTransformer, FunctionTransformer
+4. **View Results** displayed on the screen
 
-OneHotEncoder, LabelEncoder, OrdinalEncoder
+## 🔧 Local Development Setup
 
-sklearn.impute - Missing value imputation:
+### For FastAPI (REST API)
 
-SimpleImputer, IterativeImputer, KNNImputer
+```bash
+# Install dependencies
+pip install fastapi uvicorn joblib pandas scikit-learn pydantic
 
-sklearn.compose.ColumnTransformer - Column transformations
+# Run the API
+uvicorn api:app --host 0.0.0.0 --port 80
+```
 
-sklearn.pipeline.Pipeline - ML pipeline creation
+### For Streamlit (Web UI)
 
-Modeling & Evaluation:
-sklearn.linear_model - Linear and Logistic Regression
+```bash
+# Install dependencies
+pip install streamlit pandas joblib scikit-learn
 
-sklearn.metrics - Model evaluation metrics
+# Run the Streamlit app
+streamlit run streamlit.py
+```
 
-joblib.dump - Model serialization
+### Install All Dependencies at Once
 
-🔍 Key Analysis Steps
-1. Data Loading & Initial Exploration
-Loaded the CSV dataset with 1000 rows and 13 features
+```bash
+pip install fastapi uvicorn streamlit joblib pandas scikit-learn pydantic
+```
 
-Displayed basic information and first few rows
+## 📡 API Usage
 
-Checked for null values (none found)
+### Endpoint
+
+**POST** `/predict`
+
+### Request Body
+
+```json
+{
+  "Lines_of_Code": 500,
+  "AI_Usage_Hours": 3,
+  "Cognitive_Load": 7,
+  "Task_Duration_Hours": 4.5,
+  "Errors": 2.0
+}
+```
 
-Checked for duplicates (none found)
+### Response
 
-2. Statistical Summary
-Generated descriptive statistics (count, mean, std, min, quartiles, max)
+```json
+{
+  "prediction": 85.5
+}
+```
 
-Examined data distributions and ranges for all features
+### Example with cURL
 
-3. Data Quality Checks
-No missing values detected
+```bash
+curl -X POST "http://localhost:8080/predict" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "Lines_of_Code": 500,
+    "AI_Usage_Hours": 3,
+    "Cognitive_Load": 7,
+    "Task_Duration_Hours": 4.5,
+    "Errors": 2.0
+  }'
+```
 
-No duplicate records found
+### Example with Python
 
-📈 Key Insights from Data Summary
-Average Developer Profile:
-Hours Coding: 5.84 hours/day
+```python
+import requests
 
-Lines of Code: 356 lines/day
+url = "http://localhost:8080/predict"
+data = {
+    "Lines_of_Code": 500,
+    "AI_Usage_Hours": 3,
+    "Cognitive_Load": 7,
+    "Task_Duration_Hours": 4.5,
+    "Errors": 2.0
+}
 
-Bugs Found/Fixed: ~10 found, ~7 fixed daily
+response = requests.post(url, json=data)
+print(response.json())
+```
 
-AI Usage: ~3 hours/day
+## 🎯 Which Interface Should I Use?
 
-Sleep: 6.47 hours/night
+| Feature | FastAPI (REST API) | Streamlit (Web UI) |
+|---------|-------------------|-------------------|
+| **Best For** | Integration with other apps | Quick testing & demos |
+| **Access Method** | HTTP requests | Web browser |
+| **Use Case** | Production deployments | Data scientists, quick predictions |
+| **Port** | 8080 | 8501 |
+| **Documentation** | Auto-generated Swagger UI | Interactive sidebar |
+| **Deployment** | Docker, cloud platforms | Streamlit Cloud, local |
 
-Task Success Rate: ~57%
+## 📊 Input Parameters
+
+| Parameter | Type | Description | Example |
+|-----------|------|-------------|---------|
+| `Lines_of_Code` | integer | Number of lines of code written | 500 |
+| `AI_Usage_Hours` | integer | Hours spent using AI tools | 3 |
+| `Cognitive_Load` | integer | Cognitive load score (1-10) | 7 |
+| `Task_Duration_Hours` | float | Time spent on task in hours | 4.5 |
+| `Errors` | float | Number of errors encountered | 2.0 |
+
+## 📚 Interactive Documentation
+
+### FastAPI Documentation
+
+Once the API is running, access the interactive documentation at:
 
-Coffee Intake: ~3 cups/day
+- **Swagger UI**: http://localhost:8080/docs
+- **ReDoc**: http://localhost:8080/redoc
 
-Stress Level: ~66/100
+### Streamlit Web Interface
 
-Task Duration: ~8.7 hours
+Once Streamlit is running, access the web UI at:
 
-Commits: ~17 commits
+- **Streamlit UI**: http://localhost:8501
 
-Errors: ~5 errors
+## 🛠️ Project Structure
 
-Data Ranges:
-Coding hours: 1-11 hours
+```
+.
+├── api.py                                          # FastAPI application
+├── streamlit.py                                    # Streamlit web interface
+├── Dockerfile                                      # Docker configuration
+├── AI_Developer_Performance.joblib                 # Trained ML model
+├── AI_Developer_Performance_Extended_1000.ipynb    # Model training notebook
+└── README.md                                       # This file
+```
 
-Lines of code: 26-993 lines
+## 🔍 How It Works
 
-Stress levels: 30-100
+1. The API receives developer metrics via POST request
+2. Input data is validated using Pydantic models
+3. The pre-trained machine learning model processes the metrics
+4. A performance prediction is returned
 
-Task duration: 0.5-27.5 hours
+## 🚢 Deployment
+
+### FastAPI (Docker Hub)
 
-🚀 Next Steps (Implied from Imports)
-Planned Analysis:
-Data Preprocessing:
+```bash
+# Tag your image
+docker tag my-api:latest YOUR_USERNAME/my-api:latest
+
+# Push to Docker Hub
+docker push YOUR_USERNAME/my-api:latest
+```
 
-Feature scaling/normalization
+### Streamlit Cloud (Free Hosting)
+
+1. Push your code to GitHub
+2. Go to [share.streamlit.io](https://share.streamlit.io)
+3. Connect your GitHub repository
+4. Deploy `streamlit.py`
+5. Your app will be live at `https://your-app.streamlit.app`
 
-Encoding categorical variables
+### Cloud Platforms (API)
 
-Handling potential outliers
+This Docker container can be deployed to:
+- AWS ECS/Fargate
+- Google Cloud Run
+- Azure Container Instances
+- Heroku
+- DigitalOcean App Platform
 
-Feature selection/engineering
+## 🧪 Testing
 
-Model Development:
+### Test the FastAPI
 
-Train-test split
+Test the health of your API:
 
-Linear/Logistic regression modeling
+```bash
+# Check if the API is running
+curl http://localhost:8080/docs
 
-Performance evaluation (accuracy, ROC-AUC)
+# Make a test prediction
+curl -X POST "http://localhost:8080/predict" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "Lines_of_Code": 1000,
+    "AI_Usage_Hours": 5,
+    "Cognitive_Load": 6,
+    "Task_Duration_Hours": 8.0,
+    "Errors": 1.5
+  }'
+```
 
-Learning curve analysis
+### Test the Streamlit UI
 
-Model Deployment:
+1. Run `streamlit run streamlit.py`
+2. Open browser at http://localhost:8501
+3. Adjust the input parameters in the sidebar
+4. Click "Predict" to see results
+5. Try different combinations to test the model
 
-Pipeline creation for reproducible workflows
+## 📝 Model Information
 
-Model serialization with joblib
+The machine learning model (`AI_Developer_Performance.joblib`) was trained on developer performance data to predict productivity metrics based on:
+- Code output volume
+- AI assistance utilization
+- Mental workload
+- Time management
+- Error rates
 
-💡 Potential Use Cases
-Developer Productivity Analysis
+See `AI_Developer_Performance_Extended_1000.ipynb` for model training details.
 
-Stress Management Optimization
+## 🐛 Troubleshooting
 
-AI Tool Usage Impact Assessment
+### FastAPI Issues
 
-Code Quality Prediction
+**Container not starting**
+```bash
+# Check logs
+docker logs my-api
 
-Team Performance Optimization
+# Restart container
+docker restart my-api
+```
 
-📋 Requirements
-To run this notebook, install the required packages:
+**Port already in use**
+```bash
+# Use a different port
+docker run -d -p 8081:80 --name my-api my-api:latest
+```
 
-bash
-pip install pandas numpy seaborn matplotlib scikit-learn joblib
-🔄 Project Structure
-text
-AI_Developer_Performance_Extended_1000.ipynb  # Main analysis notebook
-AI_Developer_Performance_Extended_1000.csv   # Dataset
-README.md                                    # This file
-📊 Dataset Statistics Summary
-Total Records: 1000
+### Streamlit Issues
 
-Features: 13 (11 integer, 2 float)
+**Port 8501 already in use**
+```bash
+# Run on a different port
+streamlit run streamlit.py --server.port 8502
+```
 
-Memory Usage: ~101.7 KB
+**Model file not found**
+```bash
+# Make sure the model file is in the same directory
+ls AI_Developer_Performance.joblib
+```
 
-No missing values
+**Streamlit not opening in browser**
+```bash
+# Manually open the URL
+# http://localhost:8501
+```
 
-No duplicates
+### General Issues
 
-🎯 Target Variables
-The notebook imports regression and classification models, suggesting potential prediction tasks such as:
+**Model file not found**
+Ensure `AI_Developer_Performance.joblib` is in the same directory as both `api.py` and `streamlit.py`
 
-Task success rate prediction
+## 🤝 Contributing
 
-Error rate prediction
+Contributions are welcome! Please feel free to submit a Pull Request.
 
-Stress level modeling
+## 📄 License
 
-Productivity optimization
+This project is licensed under the MIT License.
+
+## 👤 Author
+
+YOUR_NAME
+
+## 🙏 Acknowledgments
+
+- Built with [FastAPI](https://fastapi.tiangolo.com/)
+- Web UI with [Streamlit](https://streamlit.io/)
+- Machine Learning with [scikit-learn](https://scikit-learn.org/)
+- Containerized with [Docker](https://www.docker.com/)
+
+---
+
+**Note**: Replace `YOUR_USERNAME` and `YOUR_NAME` with your actual Docker Hub username and name before publishing.
